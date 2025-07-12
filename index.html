@@ -11,7 +11,7 @@
       overflow-y: auto;
       border-right: 2px solid #ffcc00;
       padding-right: 15px;
-      max-height: 100%; /* 추가: 패널 전체가 너무 커질 때 스크롤 가능 */
+      max-height: 100%;
     }
     .left-panel summary { color: #ffcc00; margin-top: 20px; margin-bottom: 6px; font-size: 1.1em; cursor: pointer; }
     .button-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
@@ -94,7 +94,6 @@
   <div class="utility">
     <button onclick="clearCode()">지우기</button>
     <button onclick="copyCode()">복사하기</button>
-    <button onclick="runCode()">실행하기</button>
   </div>
 </div>
 
@@ -168,9 +167,6 @@ function copyCode() {
   area.select();
   document.execCommand('copy');
   alert("복사되었습니다!");
-}
-function runCode() {
-  alert("브라우저에서는 실행이 안돼요! Godot 엔진에서 실행해주세요.");
 }
 </script>
 
