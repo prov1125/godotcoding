@@ -1,174 +1,201 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>Godot 명령어 입력기</title>
+  <meta charset="UTF-8">
+  <title>Python 명령어 입력기</title>
   <style>
-    html, body { margin: 0; padding: 0; height: 100%; font-family: sans-serif; background-color: #444; color: white; overflow: hidden; }
-    body { display: flex; height: 100vh; max-width: 1200px; margin: 0 auto; padding: 20px; gap: 20px; }
-    .left-panel {
-      flex: 0 0 380px;
-      overflow-y: auto;
-      border-right: 2px solid #ffcc00;
-      padding-right: 15px;
-      max-height: 100%;
+    * {
+      box-sizing: border-box;
     }
-    .left-panel summary { color: #ffcc00; margin-top: 20px; margin-bottom: 6px; font-size: 1.1em; cursor: pointer; }
-    .button-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-    .button-group button { padding: 8px 12px; background-color: #3366cc; color: white; border: none; border-radius: 4px; cursor: pointer; text-align: left; white-space: normal; font-size: 14px; transition: background-color 0.2s; }
-    .button-group button:hover { background-color: #224499; }
-    .right-panel { flex: 1; display: flex; flex-direction: column; height: 100%; }
-    .right-panel h2 { margin: 0 0 10px 0; font-size: 1.3em; color: #ffcc00; border-bottom: 2px solid #ffcc00; padding-bottom: 6px; }
-    textarea { flex-grow: 1; width: 100%; resize: none; border-radius: 6px; border: none; padding: 12px; font-family: monospace; font-size: 15px; background-color: #222; color: #eee; box-sizing: border-box; }
-    .utility { margin-top: 10px; display: flex; gap: 10px; justify-content: flex-end; }
-    .utility button { padding: 8px 16px; background-color: #3366cc; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; transition: background-color 0.2s; }
-    .utility button:hover { background-color: #224499; }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #444;
+      color: white;
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 50%;
+      overflow-y: auto;
+      padding: 20px;
+      border-right: 2px solid #333;
+    }
+    .editor {
+      width: 50%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    h2 {
+      color: #ffcc00;
+      margin-top: 24px;
+    }
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    button {
+      padding: 6px 12px;
+      background-color: #3366cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    button:hover {
+      background-color: #224499;
+    }
+    textarea {
+      width: 100%;
+      height: 100%;
+      resize: none;
+      font-family: monospace;
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .utility {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    h1 {
+      color: #00ccff;
+    }
   </style>
 </head>
 <body>
+  <div class="sidebar">
+    <h1>📘 Python 명령어</h1>
 
-<div class="left-panel">
-<details open>
-  <summary>1️⃣ 기본 제어문 / 함수</summary>
-  <div class="button-group">
-    <button id="btnVar">var 선언</button>
-    <button id="btnReady">_ready() 함수</button>
-    <button id="btnIf">if 조건문</button>
-    <button id="btnFor">for 반복문</button>
+    <h2>✅ 1. 기초 출력/입력</h2>
+    <div class="button-group">
+      <button onclick='insert("print(\"Hello, World!\")  # 출력")'>print()</button>
+      <button onclick='insert("input(\"입력하세요: \"))  # 입력")'>input()</button>
+    </div>
+
+    <h2>✅ 2. 변수 및 자료형</h2>
+    <div class="button-group">
+      <button onclick='insert("a = 10  # 정수")'>정수</button>
+      <button onclick='insert("b = 3.14  # 실수")'>실수</button>
+      <button onclick='insert("c = \"hello\"  # 문자열")'>문자열</button>
+      <button onclick='insert("d = [1, 2, 3]  # 리스트")'>리스트</button>
+      <button onclick='insert("e = (1, 2, 3)  # 튜플")'>튜플</button>
+      <button onclick='insert("f = {\"key\": 1}  # 딕셔너리")'>딕셔너리</button>
+      <button onclick='insert("g = {1, 2, 3}  # 집합")'>집합</button>
+    </div>
+
+    <h2>✅ 3. 형변환 함수</h2>
+    <div class="button-group">
+      <button onclick='insert("int(\"123\")  # 문자열 → 정수")'>int()</button>
+      <button onclick='insert("float(\"3.14\")  # 문자열 → 실수")'>float()</button>
+      <button onclick='insert("str(100)  # 숫자 → 문자열")'>str()</button>
+      <button onclick='insert("list(\"abc\")  # 문자열 → 리스트")'>list()</button>
+    </div>
+
+    <h2>✅ 4. 조건문 / 반복문</h2>
+    <div class="button-group">
+      <button onclick='insert("if 조건1:\n    실행할 명령1\nelif 조건2:\n    실행할 명령2\nelse:\n    실행할 명령3")'>if-elif-else</button>
+      <button onclick='insert("for i in range(반복횟수):\n    실행할 명령")'>for</button>
+      <button onclick='insert("while 조건:\n    실행할 명령")'>while</button>
+    </div>
+
+    <h2>✅ 5. 함수 정의 및 호출</h2>
+    <div class="button-group">
+      <button onclick='insert("def 함수이름(매개변수1, 매개변수2):\n    return 값\n\nresult = 함수이름(전달값1, 전달값2)")'>def 함수</button>
+    </div>
+
+    <h2>✅ 6. 리스트 관련 함수</h2>
+    <div class="button-group">
+      <button onclick='insert("arr = []")'>리스트 생성</button>
+      <button onclick='insert("arr.append()")'>append()</button>
+      <button onclick='insert("arr.sort()")'>sort()</button>
+      <button onclick='insert("arr.reverse()")'>reverse()</button>
+      <button onclick='insert("arr.pop()")'>pop()</button>
+      <button onclick='insert("len(arr)")'>len()</button>
+      <button onclick='insert("sum(arr)")'>sum()</button>
+      <button onclick='insert("max(arr)")'>max()</button>
+      <button onclick='insert("min(arr)")'>min()</button>
+    </div>
+
+    <h2>✅ 7. 문자열 관련 함수</h2>
+    <div class="button-group">
+      <button onclick='insert("s = \"hello world\"")'>문자열 선언</button>
+      <button onclick='insert("s.upper()  # 대문자")'>upper()</button>
+      <button onclick='insert("s.lower()  # 소문자")'>lower()</button>
+      <button onclick='insert("s.split()  # 공백 기준 나누기")'>split()</button>
+      <button onclick='insert("s.replace(\"h\", \"H\")")'>replace()</button>
+      <button onclick='insert("\"hello\" in s  # 포함 여부 확인")'>in</button>
+    </div>
+
+    <h2>✅ 8. 딕셔너리 관련 함수</h2>
+    <div class="button-group">
+      <button onclick='insert("d = {:}")'>딕셔너리 선언</button>
+      <button onclick='insert("d.keys()")'>keys()</button>
+      <button onclick='insert("d.values()")'>values()</button>
+      <button onclick='insert("d.items()")'>items()</button>
+      <button onclick='insert("d.get(\"a\")")'>get()</button>
+    </div>
+
+    <h2>✅ 9. 파일 입출력</h2>
+    <div class="button-group">
+      <button onclick='insert("with open(\"file.txt\", \"w\") as f:\n    f.write(\"Hello!\")")'>쓰기</button>
+      <button onclick='insert("with open(\"file.txt\", \"r\") as f:\n    content = f.read()")'>읽기</button>
+    </div>
+
+    <h2>✅ 10. 예외 처리</h2>
+    <div class="button-group">
+      <button onclick='insert("try:\n    1 / 0\nexcept ZeroDivisionError:\n    print(\"0으로 나눌 수 없음\")\nfinally:\n    print(\"무조건 실행\")")'>try-except</button>
+    </div>
+
+    <h2>✅ 11. 자주 쓰이는 내장 함수</h2>
+    <div class="button-group">
+      <button onclick='insert("range(5)")'>range()</button>
+      <button onclick='insert("enumerate([\"a\", \"b\", \"c\"])")'>enumerate()</button>
+      <button onclick='insert("zip([1,2], [\"a\",\"b\"])")'>zip()</button>
+      <button onclick='insert("map(str, [1, 2, 3])")'>map()</button>
+      <button onclick='insert("filter(lambda x: x > 0, [-1, 0, 1])")'>filter()</button>
+    </div>
+
+    <h2>✅ 12. 유용한 표준 라이브러리</h2>
+    <div class="button-group">
+      <button onclick='insert("import math\nmath.sqrt(16)")'>math</button>
+      <button onclick='insert("import random\nrandom.randint(1, 10)")'>random</button>
+      <button onclick='insert("import datetime\ndatetime.datetime.now()")'>datetime</button>
+      <button onclick='insert("import itertools\nfrom itertools import permutations, combinations")'>itertools</button>
+    </div>
   </div>
-</details>
 
-<details>
-  <summary>2️⃣ 캐릭터 이동/점프</summary>
-  <div class="button-group">
-    <button id="btnVelocity">velocity 변수</button>
-    <button id="btnSpeed">속도 설정</button>
-    <button id="btnJump">점프</button>
-    <button id="btnMove">move_and_slide()</button>
+  <div class="editor">
+    <h2>코드 입력창</h2>
+    <textarea id="codeArea" placeholder="여기에 명령어가 입력됩니다."></textarea>
+    <div class="utility">
+      <button onclick="clearCode()">지우기</button>
+      <button onclick="copyCode()">복사하기</button>
+    </div>
   </div>
-</details>
 
-<details>
-  <summary>3️⃣ 충돌 처리</summary>
-  <div class="button-group">
-    <button id="btnFloor">is_on_floor()</button>
-    <button id="btnQueue">queue_free()</button>
-  </div>
-</details>
+  <script>
+    function insert(text) {
+      const area = document.getElementById('codeArea');
+      area.value += text + '\n';
+    }
 
-<details>
-  <summary>4️⃣ UI / Label</summary>
-  <div class="button-group">
-    <button id="btnLabel">Label.text</button>
-    <button id="btnScene">change_scene_to_file()</button>
-  </div>
-</details>
+    function clearCode() {
+      document.getElementById('codeArea').value = '';
+    }
 
-<details>
-  <summary>5️⃣ 사운드 / 효과음</summary>
-  <div class="button-group">
-    <button id="btnPlay">AudioStreamPlayer.play()</button>
-    <button id="btnStop">AudioStreamPlayer.stop()</button>
-  </div>
-</details>
+    function copyCode() {
+      const area = document.getElementById('codeArea');
+      area.select();
+      document.execCommand('copy');
+      alert("복사되었습니다!");
+    }
 
-<details>
-  <summary>6️⃣ 애니메이션</summary>
-  <div class="button-group">
-    <button id="btnAnimPlay">play()</button>
-    <button id="btnAnimStop">stop()</button>
-  </div>
-</details>
-
-<details>
-  <summary>7️⃣ 출력 / 디버그</summary>
-  <div class="button-group">
-    <button id="btnPrint">print()</button>
-  </div>
-</details>
-</div>
-
-<div class="right-panel">
-  <h2>코드 입력창</h2>
-  <textarea id="codeArea" placeholder="여기에 GDScript 명령어가 입력됩니다."></textarea>
-  <div class="utility">
-    <button onclick="clearCode()">지우기</button>
-    <button onclick="copyCode()">복사하기</button>
-  </div>
-</div>
-
-<script>
-function insert(text) {
-  const area = document.getElementById('codeArea');
-  area.value += text + '\n';
-  area.focus();
-  area.scrollTop = area.scrollHeight;
-}
-
-// 버튼 이벤트 등록
-document.getElementById('btnVar').addEventListener('click', () => {
-  insert('var score = 0  # 변수 선언과 초기화');
-});
-document.getElementById('btnReady').addEventListener('click', () => {
-  insert('func _ready():\n    pass  # 시작 시 호출되는 함수');
-});
-document.getElementById('btnIf').addEventListener('click', () => {
-  insert('if condition:\n    pass\nelse:\n    pass  # 조건문 예시');
-});
-document.getElementById('btnFor').addEventListener('click', () => {
-  insert('for i in range(5):\n    pass  # 0~4 반복');
-});
-document.getElementById('btnVelocity').addEventListener('click', () => {
-  insert('var velocity = Vector2()  # 속도 벡터');
-});
-document.getElementById('btnSpeed').addEventListener('click', () => {
-  insert('velocity.x = 200  # 오른쪽 속도');
-});
-document.getElementById('btnJump').addEventListener('click', () => {
-  insert('velocity.y = -300  # 점프');
-});
-document.getElementById('btnMove').addEventListener('click', () => {
-  insert('move_and_slide(velocity)  # 이동 적용');
-});
-document.getElementById('btnFloor').addEventListener('click', () => {
-  insert('if is_on_floor():\n    pass  # 바닥에 있는지 확인');
-});
-document.getElementById('btnQueue').addEventListener('click', () => {
-  insert('queue_free()  # 노드 제거');
-});
-document.getElementById('btnLabel').addEventListener('click', () => {
-  insert('$Label.text = "점수: " + str(score)  # Label에 점수 출력');
-});
-document.getElementById('btnScene').addEventListener('click', () => {
-  insert('get_tree().change_scene_to_file("res://GameOver.tscn")  # 씬 전환');
-});
-document.getElementById('btnPlay').addEventListener('click', () => {
-  insert('$AudioStreamPlayer.play()  # 소리 재생');
-});
-document.getElementById('btnStop').addEventListener('click', () => {
-  insert('$AudioStreamPlayer.stop()  # 소리 정지');
-});
-document.getElementById('btnAnimPlay').addEventListener('click', () => {
-  insert('$AnimationPlayer.play("Run")  # 애니메이션 재생');
-});
-document.getElementById('btnAnimStop').addEventListener('click', () => {
-  insert('$AnimationPlayer.stop()  # 애니메이션 멈춤');
-});
-document.getElementById('btnPrint').addEventListener('click', () => {
-  insert('print("Hello Godot!")  # 콘솔 출력');
-});
-
-// 유틸리티
-function clearCode() {
-  document.getElementById('codeArea').value = '';
-}
-function copyCode() {
-  const area = document.getElementById('codeArea');
-  area.select();
-  document.execCommand('copy');
-  alert("복사되었습니다!");
-}
-</script>
-
+  </script>
 </body>
 </html>
