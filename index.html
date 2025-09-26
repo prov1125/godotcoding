@@ -14,12 +14,14 @@
       color: white;
       display: flex;
       height: 100vh;
+      overflow: hidden; /* Prevent body scroll if content grows */
     }
     .sidebar {
       width: 50%;
-      overflow-y: auto;
       padding: 20px;
       border-right: 2px solid #333;
+      display: flex;
+      flex-direction: column;
     }
     .editor {
       width: 50%;
@@ -57,6 +59,9 @@
       font-size: 16px;
       padding: 10px;
       border-radius: 6px;
+      background-color: #222; /* Darker background for textarea */
+      color: #eee;
+      border: 1px solid #555;
     }
     .utility {
       display: flex;
@@ -65,108 +70,203 @@
     }
     h1 {
       color: #00ccff;
+      margin-bottom: 20px; /* Space below main title */
+    }
+
+    /* Tab styling */
+    .tab-buttons {
+      display: flex;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    .tab-button {
+      padding: 10px 15px;
+      background-color: #555;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    .tab-button:hover {
+      background-color: #777;
+    }
+    .tab-button.active {
+      background-color: #00ccff; /* Active tab color */
+      color: #333;
+      font-weight: bold;
+    }
+    .tab-content {
+      flex-grow: 1; /* Allow content to take available space */
+      overflow-y: auto; /* Enable scrolling for content */
+      padding-right: 10px; /* Padding for scrollbar */
     }
   </style>
 </head>
 <body>
   <div class="sidebar">
-    <h1>📘 Python 명령어</h1>
+    <h1>📘 Python 명령어 입력기</h1>
 
-    <h2>✅ 1. 기초 출력/입력</h2>
-    <div class="button-group">
-      <button onclick='insert("print(\"Hello, World!\")  # 출력")'>print()</button>
-      <button onclick='insert("input(\"입력하세요: \"))  # 입력")'>input()</button>
+    <div class="tab-buttons">
+      <button class="tab-button active" onclick="showTab('basic')">기본</button>
+      <button class="tab-button" onclick="showTab('advanced')">심화</button>
     </div>
 
-    <h2>✅ 2. 변수 및 자료형</h2>
-    <div class="button-group">
-      <button onclick='insert("a = 10  # 정수")'>정수</button>
-      <button onclick='insert("b = 3.14  # 실수")'>실수</button>
-      <button onclick='insert("c = \"hello\"  # 문자열")'>문자열</button>
-      <button onclick='insert("d = [1, 2, 3]  # 리스트")'>리스트</button>
-      <button onclick='insert("e = (1, 2, 3)  # 튜플")'>튜플</button>
-      <button onclick='insert("f = {\"key\": 1}  # 딕셔너리")'>딕셔너리</button>
-      <button onclick='insert("g = {1, 2, 3}  # 집합")'>집합</button>
+    <!-- 기본 탭 콘텐츠 -->
+    <div id="basicContent" class="tab-content">
+      <h2>✅ 1. 기초 출력/입력</h2>
+      <div class="button-group">
+        <button onclick='insert(`print("Hello, World!")  # 출력`)'>print()</button>
+        <button onclick='insert(`input("입력하세요: ")  # 입력`)'>input()</button>
+      </div>
+
+      <h2>✅ 2. 변수 및 자료형</h2>
+      <div class="button-group">
+        <button onclick='insert(`a = 10  # 정수`)'>정수</button>
+        <button onclick='insert(`b = 3.14  # 실수`)'>실수</button>
+        <button onclick='insert(`c = "hello"  # 문자열`)'>문자열</button>
+      </div>
+
+      <h2>✅ 3. 형변환 함수</h2>
+      <div class="button-group">
+        <button onclick='insert(`int("123")  # 문자열 → 정수`)'>int()</button>
+        <button onclick='insert(`float("3.14")  # 문자열 → 실수`)'>float()</button>
+        <button onclick='insert(`str(100)  # 숫자 → 문자열`)'>str()</button>
+      </div>
+
+      <h2>✅ 4. 조건문 / 반복문</h2>
+      <div class="button-group">
+        <button onclick='insert(`if 조건1:
+    실행할 명령1
+elif 조건2:
+    실행할 명령2
+else:
+    실행할 명령3`)'>if-elif-else</button>
+        <button onclick='insert(`for i in range(반복횟수):
+    실행할 명령`)'>for</button>
+      </div>
     </div>
 
-    <h2>✅ 3. 형변환 함수</h2>
-    <div class="button-group">
-      <button onclick='insert("int(\"123\")  # 문자열 → 정수")'>int()</button>
-      <button onclick='insert("float(\"3.14\")  # 문자열 → 실수")'>float()</button>
-      <button onclick='insert("str(100)  # 숫자 → 문자열")'>str()</button>
-      <button onclick='insert("list(\"abc\")  # 문자열 → 리스트")'>list()</button>
-    </div>
+    <!-- 심화 탭 콘텐츠 (모든 블록 포함) -->
+    <div id="advancedContent" class="tab-content" style="display: none;">
+      <h2>✅ 1. 기초 출력/입력</h2>
+      <div class="button-group">
+        <button onclick='insert(`print("Hello, World!")  # 출력`)'>print()</button>
+        <button onclick='insert(`input("입력하세요: ")  # 입력`)'>input()</button>
+      </div>
 
-    <h2>✅ 4. 조건문 / 반복문</h2>
-    <div class="button-group">
-      <button onclick='insert("if 조건1:\n    실행할 명령1\nelif 조건2:\n    실행할 명령2\nelse:\n    실행할 명령3")'>if-elif-else</button>
-      <button onclick='insert("for i in range(반복횟수):\n    실행할 명령")'>for</button>
-      <button onclick='insert("while 조건:\n    실행할 명령")'>while</button>
-    </div>
+      <h2>✅ 2. 변수 및 자료형</h2>
+      <div class="button-group">
+        <button onclick='insert(`a = 10  # 정수`)'>정수</button>
+        <button onclick='insert(`b = 3.14  # 실수`)'>실수</button>
+        <button onclick='insert(`c = "hello"  # 문자열`)'>문자열</button>
+        <button onclick='insert(`d = [1, 2, 3]  # 리스트`)'>리스트</button>
+        <button onclick='insert(`e = (1, 2, 3)  # 튜플`)'>튜플</button>
+        <button onclick='insert(`f = {"key": 1}  # 딕셔너리`)'>딕셔너리</button>
+        <button onclick='insert(`g = {1, 2, 3}  # 집합`)'>집합</button>
+      </div>
 
-    <h2>✅ 5. 함수 정의 및 호출</h2>
-    <div class="button-group">
-      <button onclick='insert("def 함수이름(매개변수1, 매개변수2):\n    return 값\n\nresult = 함수이름(전달값1, 전달값2)")'>def 함수</button>
-    </div>
+      <h2>✅ 3. 형변환 함수</h2>
+      <div class="button-group">
+        <button onclick='insert(`int("123")  # 문자열 → 정수`)'>int()</button>
+        <button onclick='insert(`float("3.14")  # 문자열 → 실수`)'>float()</button>
+        <button onclick='insert(`str(100)  # 숫자 → 문자열`)'>str()</button>
+        <button onclick='insert(`list("abc")  # 문자열 → 리스트`)'>list()</button>
+      </div>
 
-    <h2>✅ 6. 리스트 관련 함수</h2>
-    <div class="button-group">
-      <button onclick='insert("arr = []")'>리스트 생성</button>
-      <button onclick='insert("arr.append()")'>append()</button>
-      <button onclick='insert("arr.sort()")'>sort()</button>
-      <button onclick='insert("arr.reverse()")'>reverse()</button>
-      <button onclick='insert("arr.pop()")'>pop()</button>
-      <button onclick='insert("len(arr)")'>len()</button>
-      <button onclick='insert("sum(arr)")'>sum()</button>
-      <button onclick='insert("max(arr)")'>max()</button>
-      <button onclick='insert("min(arr)")'>min()</button>
-    </div>
+      <h2>✅ 4. 조건문 / 반복문</h2>
+      <div class="button-group">
+        <button onclick='insert(`if 조건1:
+    실행할 명령1
+elif 조건2:
+    실행할 명령2
+else:
+    실행할 명령3`)'>if-elif-else</button>
+        <button onclick='insert(`for i in range(반복횟수):
+    실행할 명령`)'>for</button>
+        <button onclick='insert(`while 조건:
+    실행할 명령`)'>while</button>
+      </div>
 
-    <h2>✅ 7. 문자열 관련 함수</h2>
-    <div class="button-group">
-      <button onclick='insert("s = \"hello world\"")'>문자열 선언</button>
-      <button onclick='insert("s.upper()  # 대문자")'>upper()</button>
-      <button onclick='insert("s.lower()  # 소문자")'>lower()</button>
-      <button onclick='insert("s.split()  # 공백 기준 나누기")'>split()</button>
-      <button onclick='insert("s.replace(\"h\", \"H\")")'>replace()</button>
-      <button onclick='insert("\"hello\" in s  # 포함 여부 확인")'>in</button>
-    </div>
+      <h2>✅ 5. 함수 정의 및 호출</h2>
+      <div class="button-group">
+        <button onclick='insert(`def 함수이름(매개변수1, 매개변수2):
+    return 값
 
-    <h2>✅ 8. 딕셔너리 관련 함수</h2>
-    <div class="button-group">
-      <button onclick='insert("d = {:}")'>딕셔너리 선언</button>
-      <button onclick='insert("d.keys()")'>keys()</button>
-      <button onclick='insert("d.values()")'>values()</button>
-      <button onclick='insert("d.items()")'>items()</button>
-      <button onclick='insert("d.get(\"a\")")'>get()</button>
-    </div>
+result = 함수이름(전달값1, 전달값2)`)'>def 함수</button>
+      </div>
 
-    <h2>✅ 9. 파일 입출력</h2>
-    <div class="button-group">
-      <button onclick='insert("with open(\"file.txt\", \"w\") as f:\n    f.write(\"Hello!\")")'>쓰기</button>
-      <button onclick='insert("with open(\"file.txt\", \"r\") as f:\n    content = f.read()")'>읽기</button>
-    </div>
+      <h2>✅ 6. 리스트 관련 함수</h2>
+      <div class="button-group">
+        <button onclick='insert(`arr = []`)'>리스트 생성</button>
+        <button onclick='insert(`arr.append()`)'>append()</button>
+        <button onclick='insert(`arr.sort()`)'>sort()</button>
+        <button onclick='insert(`arr.reverse()`)'>reverse()</button>
+        <button onclick='insert(`arr.pop()`)'>pop()</button>
+        <button onclick='insert(`len(arr)`)'>len()</button>
+        <button onclick='insert(`sum(arr)`)'>sum()</button>
+        <button onclick='insert(`max(arr)`)'>max()</button>
+        <button onclick='insert(`min(arr)`)'>min()</button>
+      </div>
 
-    <h2>✅ 10. 예외 처리</h2>
-    <div class="button-group">
-      <button onclick='insert("try:\n    1 / 0\nexcept ZeroDivisionError:\n    print(\"0으로 나눌 수 없음\")\nfinally:\n    print(\"무조건 실행\")")'>try-except</button>
-    </div>
+      <h2>✅ 7. 문자열 관련 함수</h2>
+      <div class="button-group">
+        <button onclick='insert(`s = "hello world"`)'>문자열 선언</button>
+        <button onclick='insert(`s.upper()  # 대문자`)'>upper()</button>
+        <button onclick='insert(`s.lower()  # 소문자`)'>lower()</button>
+        <button onclick='insert(`s.split()  # 공백 기준 나누기`)'>split()</button>
+        <button onclick='insert(`s.replace("h", "H")`)'>replace()</button>
+        <button onclick='insert(`"hello" in s  # 포함 여부 확인`)'>in</button>
+      </div>
 
-    <h2>✅ 11. 자주 쓰이는 내장 함수</h2>
-    <div class="button-group">
-      <button onclick='insert("range(5)")'>range()</button>
-      <button onclick='insert("enumerate([\"a\", \"b\", \"c\"])")'>enumerate()</button>
-      <button onclick='insert("zip([1,2], [\"a\",\"b\"])")'>zip()</button>
-      <button onclick='insert("map(str, [1, 2, 3])")'>map()</button>
-      <button onclick='insert("filter(lambda x: x > 0, [-1, 0, 1])")'>filter()</button>
-    </div>
+      <h2>✅ 8. 딕셔너리 관련 함수</h2>
+      <div class="button-group">
+        <button onclick='insert(`d = {}`)'>딕셔너리 선언</button>
+        <button onclick='insert(`d.keys()`)'>keys()</button>
+        <button onclick='insert(`d.values()`)'>values()</button>
+        <button onclick='insert(`d.items()`)'>items()</button>
+        <button onclick='insert(`d.get("a")`)'>get()</button>
+      </div>
 
-    <h2>✅ 12. 유용한 표준 라이브러리</h2>
-    <div class="button-group">
-      <button onclick='insert("import math\nmath.sqrt(16)")'>math</button>
-      <button onclick='insert("import random\nrandom.randint(1, 10)")'>random</button>
-      <button onclick='insert("import datetime\ndatetime.datetime.now()")'>datetime</button>
-      <button onclick='insert("import itertools\nfrom itertools import permutations, combinations")'>itertools</button>
+      <h2>✅ 9. 파일 입출력</h2>
+      <div class="button-group">
+        <button onclick='insert(`with open("file.txt", "w") as f:
+    f.write("Hello!")`)'>쓰기</button>
+        <button onclick='insert(`with open("file.txt", "r") as f:
+    content = f.read()`)'>읽기</button>
+      </div>
+
+      <h2>✅ 10. 예외 처리</h2>
+      <div class="button-group">
+        <button onclick='insert(`try:
+    1 / 0
+except ZeroDivisionError:
+    print("0으로 나눌 수 없음")
+finally:
+    print("무조건 실행")`)'>try-except</button>
+      </div>
+
+      <h2>✅ 11. 자주 쓰이는 내장 함수</h2>
+      <div class="button-group">
+        <button onclick='insert(`range(5)`)'>range()</button>
+        <button onclick='insert(`enumerate(["a", "b", "c"])`)'>enumerate()</button>
+        <button onclick='insert(`zip([1,2], ["a","b"])`)'>zip()</button>
+        <button onclick='insert(`map(str, [1, 2, 3])`)'>map()</button>
+        <button onclick='insert(`filter(lambda x: x > 0, [-1, 0, 1])`)'>filter()</button>
+      </div>
+
+      <h2>✅ 12. 유용한 표준 라이브러리</h2>
+      <div class="button-group">
+        <button onclick='insert(`import math
+math.sqrt(16)`)'>math</button>
+        <button onclick='insert(`import random
+random.randint(1, 10)`)'>random</button>
+        <button onclick='insert(`import datetime
+datetime.datetime.now()`)'>datetime</button>
+        <button onclick='insert(`import itertools
+from itertools import permutations, combinations`)'>itertools</button>
+      </div>
     </div>
   </div>
 
@@ -183,6 +283,8 @@
     function insert(text) {
       const area = document.getElementById('codeArea');
       area.value += text + '\n';
+      area.scrollTop = area.scrollHeight; // 항상 최신 내용이 보이도록 스크롤 이동
+      area.focus(); // 삽입 후 텍스트 영역에 포커스
     }
 
     function clearCode() {
@@ -193,8 +295,33 @@
       const area = document.getElementById('codeArea');
       area.select();
       document.execCommand('copy');
-      alert("복사되었습니다!");
+      alert("코드가 복사되었습니다!");
     }
+
+    // 탭 전환 기능
+    function showTab(tabName) {
+      const basicContent = document.getElementById('basicContent');
+      const advancedContent = document.getElementById('advancedContent');
+      const tabButtons = document.querySelectorAll('.tab-button');
+
+      // 모든 탭 버튼의 active 클래스 제거
+      tabButtons.forEach(button => button.classList.remove('active'));
+
+      if (tabName === 'basic') {
+        basicContent.style.display = 'block';
+        advancedContent.style.display = 'none';
+        document.querySelector('.tab-buttons .tab-button:nth-child(1)').classList.add('active'); // '기본' 탭 활성화
+      } else if (tabName === 'advanced') {
+        basicContent.style.display = 'none';
+        advancedContent.style.display = 'block';
+        document.querySelector('.tab-buttons .tab-button:nth-child(2)').classList.add('active'); // '심화' 탭 활성화
+      }
+    }
+
+    // 페이지 로드 시 기본 탭을 활성화 (선택 사항)
+    document.addEventListener('DOMContentLoaded', () => {
+      showTab('basic');
+    });
 
   </script>
 </body>
