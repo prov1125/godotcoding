@@ -316,21 +316,23 @@ from itertools import permutations, combinations`)'>itertools</button>
     }
   
     try {
-      outputArea.textContent = ""; // 기존 출력 지우기
+      outputArea.textContent = "";
   
-      // 🔹 input()을 감지해서 prompt로 대체
-      pyodide.setStdin({
-        readline: () => {
-          return prompt("입력값을 입력하세요:") || "";
-        }
-      });
-
-    const result = await pyodide.runPythonAsync(code);
-    if (result !== undefined) outputArea.textContent += result + "\n";
-  } catch (err) {
-    outputArea.textContent = "🚨 오류 발생:\n" + err;
+      // 🔹 (1) input()을 JS prompt()로 미리 대체
+      const patchedCode = `
+  def input(prompt_msg=""):
+      from js import prompt
+      return prompt(prompt_msg) or ""
+  ` + "\n" + code;
+  
+      // 🔹 (2) 실행
+      const result = await pyodide.runPythonAsync(patchedCode);
+      if (result !== undefined) outputArea.textContent += result + "\n";
+    } catch (err) {
+      outputArea.textContent = "🚨 오류 발생:\n" + err;
+    }
   }
-}
+
 
 
 
@@ -373,6 +375,7 @@ from itertools import permutations, combinations`)'>itertools</button>
   </script>
 </body>
 </html>
+
 
 
 
