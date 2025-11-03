@@ -29,6 +29,27 @@
       display: flex;
       flex-direction: column;
     }
+    #codeArea {
+      flex: 7; /* 전체 공간 중 7할 차지 */
+      resize: none;
+      font-family: monospace;
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 6px;
+      background-color: #222;
+      color: #eee;
+      border: 1px solid #555;
+    }
+    
+    #outputArea {
+      flex: 3; /* 전체 공간 중 3할 차지 */
+      background-color: #111;
+      border: 1px solid #555;
+      border-radius: 6px;
+      padding: 10px;
+      overflow-y: auto;
+      white-space: pre-wrap; /* 긴 줄 자동 줄바꿈 */
+    }
     h2 {
       color: #ffcc00;
       margin-top: 24px;
@@ -391,6 +412,7 @@ from itertools import permutations, combinations`)'>itertools</button>
   </script>
 </body>
 </html>
+
 
 
 
