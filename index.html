@@ -308,20 +308,30 @@ from itertools import permutations, combinations`)'>itertools</button>
     }
 
     async function runCode() {
-      const outputArea = document.getElementById("outputArea");
-      const code = document.getElementById("codeArea").value;
-      if (!pyodideReady) {
-        outputArea.textContent = "아직 Python 엔진이 로드되지 않았습니다. 잠시만 기다려주세요.";
-        return;
-      }
-      try {
-        outputArea.textContent = ""; // 기존 출력 지우기
-        const result = await pyodide.runPythonAsync(code);
-        if (result !== undefined) outputArea.textContent += result + "\n";
-      } catch (err) {
-        outputArea.textContent = "🚨 오류 발생:\n" + err;
-      }
+    const outputArea = document.getElementById("outputArea");
+    const code = document.getElementById("codeArea").value;
+    if (!pyodideReady) {
+      outputArea.textContent = "아직 Python 엔진이 로드되지 않았습니다. 잠시만 기다려주세요.";
+      return;
     }
+  
+    try {
+      outputArea.textContent = ""; // 기존 출력 지우기
+  
+      // 🔹 input()을 감지해서 prompt로 대체
+      pyodide.setStdin({
+        readline: () => {
+          return prompt("입력값을 입력하세요:") || "";
+        }
+      });
+
+    const result = await pyodide.runPythonAsync(code);
+    if (result !== undefined) outputArea.textContent += result + "\n";
+  } catch (err) {
+    outputArea.textContent = "🚨 오류 발생:\n" + err;
+  }
+}
+
 
 
     function clearCode() {
@@ -363,5 +373,6 @@ from itertools import permutations, combinations`)'>itertools</button>
   </script>
 </body>
 </html>
+
 
 
