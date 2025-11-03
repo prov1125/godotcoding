@@ -296,6 +296,13 @@ from itertools import permutations, combinations`)'>itertools</button>
       document.getElementById("outputArea").textContent = "✅ 준비 완료! 코드를 실행할 수 있습니다.";
     }
     initPyodide();
+
+    function insert(text) {
+      const area = document.getElementById('codeArea');
+      area.value += text + '\n';
+      area.scrollTop = area.scrollHeight; // 항상 최신 내용이 보이도록 스크롤 이동
+      area.focus(); // 삽입 후 텍스트 영역에 포커스
+    }
   
     async function runCode() {
       const outputArea = document.getElementById("outputArea");
@@ -384,6 +391,7 @@ from itertools import permutations, combinations`)'>itertools</button>
   </script>
 </body>
 </html>
+
 
 
 
