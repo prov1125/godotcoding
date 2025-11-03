@@ -318,12 +318,13 @@ from itertools import permutations, combinations`)'>itertools</button>
     try {
       outputArea.textContent = "";
   
-      // 🔹 (1) input()을 JS prompt()로 미리 대체
-      const patchedCode = `
-  def input(prompt_msg=""):
+      // 🔹 (1) input()을 JS prompt()로 미리 대체 — 들여쓰기 문제 해결
+      const patchedCode = (
+  `def input(prompt_msg=""):
       from js import prompt
       return prompt(prompt_msg) or ""
-  ` + "\n" + code;
+  ` + "\n" + code
+      ).trimStart();  // ✅ 들여쓰기 문제 방지
   
       // 🔹 (2) 실행
       const result = await pyodide.runPythonAsync(patchedCode);
@@ -332,6 +333,7 @@ from itertools import permutations, combinations`)'>itertools</button>
       outputArea.textContent = "🚨 오류 발생:\n" + err;
     }
   }
+
 
 
 
@@ -375,6 +377,7 @@ from itertools import permutations, combinations`)'>itertools</button>
   </script>
 </body>
 </html>
+
 
 
 
