@@ -276,18 +276,53 @@ from itertools import permutations, combinations`)'>itertools</button>
     <h2>코드 입력창</h2>
     <textarea id="codeArea" placeholder="여기에 명령어가 입력됩니다."></textarea>
     <div class="utility">
+      <button onclick="runCode()">▶ 실행하기</button>
       <button onclick="clearCode()">지우기</button>
       <button onclick="copyCode()">복사하기</button>
     </div>
+    <h2>출력 결과</h2>
+    <pre id="outputArea">여기에 실행 결과가 표시됩니다.</pre>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
   <script>
+    let pyodideReady = false;
+    let pyodide;
+
+    // Pyodide 초기화
+    async function initPyodide() {
+      document.getElementById("outputArea").textContent = "Python 엔진 로드 중...";
+      pyodide = await loadPyodide();
+      pyodideReady = true;
+      document.getElementById("outputArea").textContent = "준비 완료! 이제 코드를 실행할 수 있습니다.";
+    }
+    initPyodide();
+
+
+    
     function insert(text) {
       const area = document.getElementById('codeArea');
       area.value += text + '\n';
       area.scrollTop = area.scrollHeight; // 항상 최신 내용이 보이도록 스크롤 이동
       area.focus(); // 삽입 후 텍스트 영역에 포커스
     }
+
+    async function runCode() {
+      const outputArea = document.getElementById("outputArea");
+      const code = document.getElementById("codeArea").value;
+      if (!pyodideReady) {
+        outputArea.textContent = "아직 Python 엔진이 로드되지 않았습니다. 잠시만 기다려주세요.";
+        return;
+      }
+      try {
+        outputArea.textContent = ""; // 기존 출력 지우기
+        const result = await pyodide.runPythonAsync(code);
+        if (result !== undefined) outputArea.textContent += result + "\n";
+      } catch (err) {
+        outputArea.textContent = "🚨 오류 발생:\n" + err;
+      }
+    }
+
 
     function clearCode() {
       document.getElementById('codeArea').value = '';
@@ -328,4 +363,5 @@ from itertools import permutations, combinations`)'>itertools</button>
   </script>
 </body>
 </html>
+
 
