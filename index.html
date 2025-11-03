@@ -288,60 +288,60 @@ from itertools import permutations, combinations`)'>itertools</button>
   <script>
     let pyodideReady = false;
     let pyodide;
-
-    // Pyodide 초기화
+  
     async function initPyodide() {
       document.getElementById("outputArea").textContent = "Python 엔진 로드 중...";
       pyodide = await loadPyodide();
       pyodideReady = true;
-      document.getElementById("outputArea").textContent = "준비 완료! 이제 코드를 실행할 수 있습니다.";
+      document.getElementById("outputArea").textContent = "✅ 준비 완료! 코드를 실행할 수 있습니다.";
     }
     initPyodide();
-
-
-    
-    function insert(text) {
-      const area = document.getElementById('codeArea');
-      area.value += text + '\n';
-      area.scrollTop = area.scrollHeight; // 항상 최신 내용이 보이도록 스크롤 이동
-      area.focus(); // 삽입 후 텍스트 영역에 포커스
-    }
-
+  
     async function runCode() {
-    const outputArea = document.getElementById("outputArea");
-    const code = document.getElementById("codeArea").value;
-    if (!pyodideReady) {
-      outputArea.textContent = "아직 Python 엔진이 로드되지 않았습니다. 잠시만 기다려주세요.";
-      return;
+      const outputArea = document.getElementById("outputArea");
+      const code = document.getElementById("codeArea").value;
+      if (!pyodideReady) {
+        outputArea.textContent = "아직 Python 엔진이 로드되지 않았습니다. 잠시만 기다려주세요.";
+        return;
+      }
+  
+      try {
+        outputArea.textContent = "";
+  
+        // 🔹 print(), input()을 JS로 연결
+        const patchedCode = `
+  import sys
+  from js import console, prompt
+  
+  class JSWriter:
+      def write(self, s):
+          if s.strip():
+              console.log(s)
+              from js import document
+              out = document.getElementById("outputArea")
+              out.textContent += s
+      def flush(self):
+          pass
+  
+  sys.stdout = JSWriter()
+  sys.stderr = JSWriter()
+  
+  def input(prompt_msg=""):
+      return prompt(prompt_msg) or ""
+  
+  ${code}
+  `;
+  
+        await pyodide.runPythonAsync(patchedCode);
+      } catch (err) {
+        outputArea.textContent += "\\n🚨 오류 발생:\\n" + err;
+      }
     }
   
-    try {
-      outputArea.textContent = "";
-  
-      // ✅ 첫 줄 공백 문제를 아예 없애기 위해 백틱 대신 일반 문자열 사용
-      const inputPatch =
-  'def input(prompt_msg=""):\n' +
-  '    from js import prompt\n' +
-  '    return prompt(prompt_msg) or ""\n\n';
-  
-      const patchedCode = inputPatch + code.trimStart();
-  
-      const result = await pyodide.runPythonAsync(patchedCode);
-      if (result !== undefined) outputArea.textContent += result + "\n";
-    } catch (err) {
-      outputArea.textContent = "🚨 오류 발생:\n" + err;
-    }
-  }
-
-
-
-
-
-
     function clearCode() {
       document.getElementById('codeArea').value = '';
     }
-
+  
     function copyCode() {
       const area = document.getElementById('codeArea');
       area.select();
@@ -377,6 +377,7 @@ from itertools import permutations, combinations`)'>itertools</button>
   </script>
 </body>
 </html>
+
 
 
 
