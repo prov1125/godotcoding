@@ -318,21 +318,21 @@ from itertools import permutations, combinations`)'>itertools</button>
     try {
       outputArea.textContent = "";
   
-      // 🔹 (1) input()을 JS prompt()로 미리 대체 — 들여쓰기 문제 해결
-      const patchedCode = (
-  `def input(prompt_msg=""):
-      from js import prompt
-      return prompt(prompt_msg) or ""
-  ` + "\n" + code
-      ).trimStart();  // ✅ 들여쓰기 문제 방지
+      // ✅ 첫 줄 공백 문제를 아예 없애기 위해 백틱 대신 일반 문자열 사용
+      const inputPatch =
+  'def input(prompt_msg=""):\n' +
+  '    from js import prompt\n' +
+  '    return prompt(prompt_msg) or ""\n\n';
   
-      // 🔹 (2) 실행
+      const patchedCode = inputPatch + code.trimStart();
+  
       const result = await pyodide.runPythonAsync(patchedCode);
       if (result !== undefined) outputArea.textContent += result + "\n";
     } catch (err) {
       outputArea.textContent = "🚨 오류 발생:\n" + err;
     }
   }
+
 
 
 
@@ -377,6 +377,7 @@ from itertools import permutations, combinations`)'>itertools</button>
   </script>
 </body>
 </html>
+
 
 
 
